@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AnhXa();
 
-       //getListUserFromDatabase();
-        Find("Duy");
+       getListUserFromDatabase();
+        //Find("Duy");
     }
 
     private void AnhXa(){

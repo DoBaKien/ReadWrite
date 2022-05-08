@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class ReadWriteObject extends AppCompatActivity {
-    Button btnPush, btnGet, btnDel;
+    Button btnPush, btnGet, btnDel,btnUp;
     TextView tv;
 
     @Override
@@ -30,6 +30,7 @@ public class ReadWriteObject extends AppCompatActivity {
         btnPush=findViewById(R.id.button5);
         btnGet=findViewById(R.id.button6);
         btnDel=findViewById(R.id.button7);
+        btnUp=findViewById(R.id.button8);
         tv=findViewById(R.id.textView);
 
         btnPush.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +53,29 @@ public class ReadWriteObject extends AppCompatActivity {
                 onClickDelData();
             }
         });
+
+        btnUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickUpdateData();
+            }
+        });
     }
+
+    private void onClickUpdateData(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User_info");
+
+        User user=new User(2,"Duy", new Job(2,"job2"));
+        user.setAddress("TPHCM");
+        myRef.setValue(user, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Toast.makeText(ReadWriteObject.this, "Update success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void onClickDelData(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("test");
