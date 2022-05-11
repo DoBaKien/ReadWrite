@@ -1,5 +1,8 @@
 package com.example.readobjectfb;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private int id;
     private String name;
@@ -56,6 +59,18 @@ public class User {
                 ", job=" + job +
                 ", address='" + address + '\'' +
                 '}';
+    }
+
+    public User(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", name);
+        result.put("address", address);
+        return result;
     }
 }
 

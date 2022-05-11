@@ -17,6 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class ReadWriteObject extends AppCompatActivity {
     Button btnPush, btnGet, btnDel,btnUp;
     TextView tv;
@@ -57,12 +61,13 @@ public class ReadWriteObject extends AppCompatActivity {
         btnUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClickUpdateData();
+                onClickUpdateDataC32();
             }
         });
     }
 
-    private void onClickUpdateData(){
+    //Update cach 1
+    private void onClickUpdateDataC1(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("User_info");
 
@@ -75,6 +80,54 @@ public class ReadWriteObject extends AppCompatActivity {
             }
         });
     }
+
+    //Update cach 2
+    private void onClickUpdateDataC2(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference("User_info");
+//        myRef.child("name").setValue("Test12", new DatabaseReference.CompletionListener() {
+
+        DatabaseReference myRef = database.getReference("User_info/name");
+        myRef.setValue("Test12", new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Toast.makeText(ReadWriteObject.this, "Update success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Update cach 3
+    private void onClickUpdateDataC3(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User_info");
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("address", "SaiGon");
+        result.put("name", "abc");
+        result.put("job/name", "job3");
+
+        myRef.updateChildren(result, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Toast.makeText(ReadWriteObject.this, "Update success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Update cach 3.2
+    private void onClickUpdateDataC32(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("User_info");
+
+        User user = new User("ss","Hai Phong");
+        myRef.updateChildren(user.toMap(), new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Toast.makeText(ReadWriteObject.this, "Update success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void onClickDelData(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();

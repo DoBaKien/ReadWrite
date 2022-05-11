@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -24,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<User> mListUsers;
     EditText edtnhap;
     Button btnFind;
+    TextView txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +42,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AnhXa();
 
-       getListUserFromDatabase();
-        //Find("Duy");
+      // getListUserFromDatabase();
+
+       btnFind.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               String t;
+               t= edtnhap.getText()+"";
+               txt.setText(t);
+               Find(t);
+           }
+       });
+
     }
 
     private void AnhXa(){
+        txt=findViewById(R.id.textView2);
         rcvUser =findViewById(R.id.rcv_user);
         mListUsers =  new ArrayList<>();
         edtnhap = findViewById(R.id.editTextTextPersonName);
         btnFind= findViewById(R.id.button);
+
         mUserAdapter = new UserAdapter(mListUsers, this);
         rcvUser.setLayoutManager(new LinearLayoutManager(this ));
         rcvUser.setAdapter(mUserAdapter);
@@ -80,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         //Query query= myRef.limitToFirst(2);
        // Query query= myRef.orderByChild("name").equalTo("Kien");
         //query.addChildEventListener(new ChildEventListener() {
-        myRef.addChildEventListener(new ChildEventListener() {
+        myRef.limitToFirst(1).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 User user = snapshot.getValue(User.class);

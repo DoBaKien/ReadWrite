@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/ReadObjectFB/app/src/main/res/drawable/bg.xml" value="0.174" />
         <entry key="..\:/Android/ReadObjectFB/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Android/ReadObjectFB/app/src/main/res/layout/chat.xml" value="0.27447916666666666" />
+        <entry key="..\:/Android/ReadObjectFB/app/src/main/res/layout/item.xml" value="0.27447916666666666" />
         <entry key="..\:/Android/ReadObjectFB/app/src/main/res/layout/item_user.xml" value="0.2604166666666667" />
         <entry key="..\:/Android/ReadObjectFB/app/src/main/res/layout/project.xml" value="0.264" />
         <entry key="..\:/Android/ReadObjectFB/app/src/main/res/layout/readwrite_object.xml" value="0.27447916666666666" />
