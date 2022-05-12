@@ -11,6 +11,9 @@ public class Message {
         return message;
     }
 
+    public Message() {
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }

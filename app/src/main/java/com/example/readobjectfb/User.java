@@ -69,7 +69,6 @@ public class User {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
-        result.put("address", address);
         return result;
     }
 }

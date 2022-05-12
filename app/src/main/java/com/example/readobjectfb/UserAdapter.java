@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,9 +17,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private ArrayList<User> mListUser;
     private Context ctx;
     private LayoutInflater layoutInflater;
+    private OnItemClickListener clicklistener;
+
+    public interface OnItemClickListener {
+        void onItemClick(User user);
+    }
 
 
-    public UserAdapter(ArrayList<User> mListUser, Context ctx) {
+    public UserAdapter(ArrayList<User> mListUser, Context ctx, OnItemClickListener cll) {
+        this.clicklistener = cll;
         this.mListUser = mListUser;
         layoutInflater = LayoutInflater.from(ctx) ;
     }
@@ -35,7 +42,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         User user = mListUser.get(position);
         holder.tvName.setText(user.getName());
         holder.tvId.setText(String.valueOf(user.getId()));
-
+        holder.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clicklistener.onItemClick(user);
+            }
+        });
     }
 
     @Override
@@ -48,12 +60,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         TextView tvName,tvId;
         UserAdapter userAdapter;
+        Button btnUpdate;
 
         public UserViewHolder(@NonNull View itemView, UserAdapter adapter) {
             super(itemView);
             tvName= itemView.findViewById(R.id.tvname);
             tvId= itemView.findViewById(R.id.tvid);
-
+            btnUpdate= itemView.findViewById(R.id.buttonUpdate);
             this.userAdapter = adapter;
         }
     }

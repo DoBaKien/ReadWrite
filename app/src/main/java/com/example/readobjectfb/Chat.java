@@ -7,14 +7,19 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +47,7 @@ public class Chat extends AppCompatActivity {
         rcvMessage.setAdapter(messageAdapter);
         rcvMessage.setLayoutManager(new LinearLayoutManager(this ));
 
-
+        getListUserFromDatabase();
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,6 +60,27 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkKeyBoard();
+            }
+        });
+    }
+
+    private void getListUserFromDatabase(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("message");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    Message Message = dataSnapshot.getValue(Message.class);
+                    mListMessage.add(Message);
+                }
+                //messageAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(Chat.this, "Get list fail", Toast.LENGTH_SHORT).show();
             }
         });
     }
