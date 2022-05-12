@@ -20,7 +20,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private OnItemClickListener clicklistener;
 
     public interface OnItemClickListener {
-        void onItemClick(User user);
+        void onItemUpdateClick(User user);
+        void onItemDeleteClick(User user);
     }
 
 
@@ -45,7 +46,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clicklistener.onItemClick(user);
+                clicklistener.onItemUpdateClick(user);
+            }
+        });
+
+        holder.btnDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clicklistener.onItemDeleteClick(user);
             }
         });
     }
@@ -60,13 +68,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         TextView tvName,tvId;
         UserAdapter userAdapter;
-        Button btnUpdate;
+        Button btnUpdate, btnDel;
 
         public UserViewHolder(@NonNull View itemView, UserAdapter adapter) {
             super(itemView);
             tvName= itemView.findViewById(R.id.tvname);
             tvId= itemView.findViewById(R.id.tvid);
             btnUpdate= itemView.findViewById(R.id.buttonUpdate);
+            btnDel= itemView.findViewById(R.id.button9);
             this.userAdapter = adapter;
         }
     }

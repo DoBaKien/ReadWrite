@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -37,9 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rcvUser;
     private UserAdapter mUserAdapter;
     private ArrayList<User> mListUsers;
-    EditText edtnhap;
-    Button btnFind;
-    TextView txt;
+    EditText edtId, edtName;
+    Button btnAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,34 +50,53 @@ public class MainActivity extends AppCompatActivity {
 
        getListUserFromDatabase();
 
-       btnFind.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               String t;
-               t= edtnhap.getText()+"";
-               txt.setText(t);
-               Find(t);
-           }
-       });
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id =Integer.parseInt(edtId.getText().toString().trim());
+                String name= edtName.getText().toString().trim();
+                User user = new User(id, name);
+                onClickAddUser(user);
+            }
+        });
 
     }
 
     private void AnhXa(){
-        txt=findViewById(R.id.textView2);
+        edtName = findViewById(R.id.editTextTextPersonName2);
         rcvUser =findViewById(R.id.rcv_user);
         mListUsers =  new ArrayList<>();
-        edtnhap = findViewById(R.id.editTextTextPersonName);
-        btnFind= findViewById(R.id.button);
+        edtId = findViewById(R.id.editTextTextPersonName);
+        btnAdd= findViewById(R.id.button);
 
         mUserAdapter = new UserAdapter(mListUsers, this, new UserAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(User user) {
+            public void onItemUpdateClick(User user) {
                 UpdateItem(user);
+            }
+
+            @Override
+            public void onItemDeleteClick(User user) {
+                onClickDelData(user);
             }
         });
                 rcvUser.setLayoutManager(new LinearLayoutManager(this));
         rcvUser.setAdapter(mUserAdapter);
     }
+
+    private void onClickAddUser(User user){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users");
+
+        String pathObject = String.valueOf(user.getId());
+        myRef.child(pathObject).setValue(user, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Toast.makeText(MainActivity.this, "Add success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void getListUserFromDatabase(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -121,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0; i<mListUsers.size();i++){
                     if(user.getId() == mListUsers.get(i).getId()){
                         mListUsers.set(i,user);
+                        break;
                     }
                 }
                 mUserAdapter.notifyDataSetChanged();
@@ -128,7 +149,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
+                User user = snapshot.getValue(User.class);
+                    if(mListUsers == null ||user ==null || mListUsers.isEmpty()){
+                    return;
+                }
+                    for(int i=0;i<mListUsers.size();i++){
+                        if(user.getId() == mListUsers.get(i).getId()){
+                            mListUsers.remove(mListUsers.get(i));
+                            break;
+                        }
+                    }
+                mUserAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -142,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
     private void Find(String keyword) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Users");
@@ -224,6 +257,24 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void onClickDelData(User user){
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.app_name))
+                .setMessage("Xóa ???")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("Users");
+                        myRef.child(String.valueOf(user.getId())).removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                Toast.makeText(MainActivity.this, "Del success", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).setNegativeButton("Cancel",null).show();
+    }
 
 
     }
